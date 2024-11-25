@@ -1,6 +1,6 @@
 import { startOfWeek, formatISO } from "date-fns";
 import ScheduleClient from "@/components/ScheduleClient";
-import { fetchSchedule } from "@/services/scheduleService";
+import { fetchEntityNameById, fetchSchedule} from "@/services/scheduleService";
 import { formatSchedule } from "@/utils/formatSchedule";
 import { ScheduleType } from "@/types/schedule";
 
@@ -11,38 +11,21 @@ export default async function SchedulePage({
 }) {
     const { type, id } = await params;
 
-    // Проверяем валидность типа
     const validTypes = ["groups", "teachers", "cabinets", "individuals"];
     if (!validTypes.includes(type)) {
         throw new Error("Invalid type");
     }
 
-    // Приведение к ScheduleType
     const validatedType = type as ScheduleType;
 
-    // Вычисляем начало недели
     const today = new Date();
     const weekStart = startOfWeek(today, { weekStartsOn: 1 });
     const formattedWeekStart = formatISO(weekStart, { representation: "date" });
 
     try {
-        // Получаем расписание с данными
         const schedule = await fetchSchedule(validatedType, id, weekStart);
 
-        const entityName =
-            schedule.length > 0
-                ? validatedType === "groups"
-                    ? schedule[0].Group?.GroupName
-                    : validatedType === "teachers"
-                        ? `${schedule[0].User_Schedule_TeacherIDToUser?.FirstName || ""} ${
-                            schedule[0].User_Schedule_TeacherIDToUser?.LastName || ""
-                        }`.trim()
-                        : validatedType === "individuals"
-                            ? `${schedule[0].User_Schedule_StudentIDToUser?.FirstName || ""} ${
-                                schedule[0].User_Schedule_StudentIDToUser?.LastName || ""
-                            }`.trim()
-                            : schedule[0].Cabinet?.CabinetName
-                : "Нет данных";
+        const entityName = await fetchEntityNameById(validatedType, Number(id));
 
         const initialData = formatSchedule(schedule);
 

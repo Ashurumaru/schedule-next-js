@@ -37,6 +37,64 @@ export async function fetchSchedule(type: string, id: string, weekStart: Date) {
     });
 }
 
+// Функция для получения названия объекта по его типу и id
+export async function fetchEntityNameById(type: ValidType, id: number) {
+    switch (type) {
+        case "groups":
+            const group = await prisma.group.findUnique({
+                where: {
+                    GroupID: id,
+                },
+                select: {
+                    GroupName: true,
+                },
+            });
+            return group?.GroupName || "Без названия";
+
+        case "teachers":
+            const teacher = await prisma.user.findUnique({
+                where: {
+                    UserID: id,
+                },
+                select: {
+                    FirstName: true,
+                    LastName: true,
+                },
+            });
+            return teacher
+                ? `${teacher.FirstName || ""} ${teacher.LastName || ""}`.trim() || "Без имени"
+                : "Без имени";
+
+        case "individuals":
+            const student = await prisma.user.findUnique({
+                where: {
+                    UserID: id,
+                },
+                select: {
+                    FirstName: true,
+                    LastName: true,
+                },
+            });
+            return student
+                ? `${student.FirstName || ""} ${student.LastName || ""}`.trim() || "Без имени"
+                : "Без имени";
+
+        case "cabinets":
+            const cabinet = await prisma.cabinet.findUnique({
+                where: {
+                    CabinetID: id,
+                },
+                select: {
+                    CabinetName: true,
+                },
+            });
+            return cabinet?.CabinetName || "Без названия";
+
+        default:
+            throw new Error("Invalid type");
+    }
+}
+
 export async function fetchData(type: ValidType) {
     switch (type) {
         case "groups":
