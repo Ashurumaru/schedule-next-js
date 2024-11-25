@@ -89,7 +89,11 @@ export default function ScheduleGrid({
                     }
 
                     const dayData = sortByTime(
-                        data?.filter((entry) => entry.time.includes(day)) || []
+                        data?.filter(
+                            (entry) =>
+                                entry.time.includes(day) &&
+                                (entry.group || entry.individual)
+                        ) || []
                     );
 
                     const isEmptyDay = dayData.length === 0;
@@ -131,10 +135,22 @@ export default function ScheduleGrid({
                                                     id: entry.teacherId || 0,
                                                     name: entry.teacher || "Неизвестно",
                                                 }}
-                                                group={{
-                                                    id: entry.groupId || 0,
-                                                    name: entry.group || "Неизвестно",
-                                                }}
+                                                group={
+                                                    entry.groupId
+                                                        ? {
+                                                            id: entry.groupId,
+                                                            name: entry.group || "Неизвестно",
+                                                        }
+                                                        : undefined
+                                                }
+                                                individuals={
+                                                    entry.individualId
+                                                        ? {
+                                                            id: entry.individualId,
+                                                            name: entry.individual || "Неизвестно",
+                                                        }
+                                                        : undefined
+                                                }
                                             />
                                         ))}
                                     </div>

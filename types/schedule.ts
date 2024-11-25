@@ -32,6 +32,11 @@ export interface RawScheduleEntry {
         FirstName: string | null;
         LastName: string | null;
     } | null;
+    User_Schedule_StudentIDToUser?: {
+        UserID: number;
+        FirstName: string | null;
+        LastName: string | null;
+    } | null;
 }
 
 
@@ -44,6 +49,8 @@ export interface ScheduleEntry {
     time: string;
     cabinet: string;
     cabinetId: number;
+    individual?: string;
+    individualId?: number;
     teacher?: string;
     teacherId?: number;
     group?: string;
@@ -52,4 +59,4 @@ export interface ScheduleEntry {
 
 
 // Типы, допустимые для расписания
-export type ScheduleType = "groups" | "teachers" | "cabinets";
+export type ScheduleType = "groups" | "teachers" | "cabinets" | "individuals";

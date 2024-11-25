@@ -8,7 +8,8 @@ export interface ScheduleCardProps {
     time: string;
     cabinet: { id: number; name: string };
     teacher: { id: number; name: string };
-    group: { id: number; name: string };
+    group?: { id: number; name: string };
+    individuals?: { id: number; name: string };
 }
 
 export default function ScheduleCard({
@@ -17,6 +18,7 @@ export default function ScheduleCard({
                                          cabinet,
                                          teacher,
                                          group,
+                                         individuals,
                                      }: ScheduleCardProps) {
     return (
         <Card className="bg-gray-50 dark:bg-gray-800 hover:bg-blue-50 dark:hover:bg-blue-900 transition rounded-lg shadow p-4">
@@ -29,22 +31,45 @@ export default function ScheduleCard({
                 <p className="text-gray-500 dark:text-gray-400">{time}</p>
                 <p>
                     Аудитория:{" "}
-                    <Link href={`/cabinets/${cabinet.id}`} className="text-blue-500 dark:text-blue-400 hover:underline">
+                    <Link
+                        href={`/cabinets/${cabinet.id}`}
+                        className="text-blue-500 dark:text-blue-400 hover:underline"
+                    >
                         {cabinet.name}
                     </Link>
                 </p>
                 <p>
                     Преподаватель:{" "}
-                    <Link href={`/teachers/${teacher.id}`} className="text-blue-500 dark:text-blue-400 hover:underline">
+                    <Link
+                        href={`/teachers/${teacher.id}`}
+                        className="text-blue-500 dark:text-blue-400 hover:underline"
+                    >
                         {teacher.name}
                     </Link>
                 </p>
-                <p>
-                    Группа:{" "}
-                    <Link href={`/groups/${group.id}`} className="text-blue-500 dark:text-blue-400 hover:underline">
-                        {group.name}
-                    </Link>
-                </p>
+                {group ? (
+                    <p>
+                        Группа:{" "}
+                        <Link
+                            href={`/groups/${group.id}`}
+                            className="text-blue-500 dark:text-blue-400 hover:underline"
+                        >
+                            {group.name}
+                        </Link>
+                    </p>
+                ) : individuals ? (
+                    <p>
+                        Студент:{" "}
+                        <Link
+                            href={`/individuals/${individuals.id}`}
+                            className="text-blue-500 dark:text-blue-400 hover:underline"
+                        >
+                            {individuals.name}
+                        </Link>
+                    </p>
+                ) : (
+                    <p className="text-gray-500 dark:text-gray-400">Нет информации о группе или студенте</p>
+                )}
             </CardContent>
         </Card>
     );

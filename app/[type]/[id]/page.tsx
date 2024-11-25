@@ -12,7 +12,7 @@ export default async function SchedulePage({
     const { type, id } = await params;
 
     // Проверяем валидность типа
-    const validTypes = ["groups", "teachers", "cabinets"];
+    const validTypes = ["groups", "teachers", "cabinets", "individuals"];
     if (!validTypes.includes(type)) {
         throw new Error("Invalid type");
     }
@@ -22,7 +22,7 @@ export default async function SchedulePage({
 
     // Вычисляем начало недели
     const today = new Date();
-    const weekStart = startOfWeek(today, { weekStartsOn: 1 }); // Понедельник
+    const weekStart = startOfWeek(today, { weekStartsOn: 1 });
     const formattedWeekStart = formatISO(weekStart, { representation: "date" });
 
     try {
@@ -37,7 +37,11 @@ export default async function SchedulePage({
                         ? `${schedule[0].User_Schedule_TeacherIDToUser?.FirstName || ""} ${
                             schedule[0].User_Schedule_TeacherIDToUser?.LastName || ""
                         }`.trim()
-                        : schedule[0].Cabinet?.CabinetName
+                        : validatedType === "individuals"
+                            ? `${schedule[0].User_Schedule_StudentIDToUser?.FirstName || ""} ${
+                                schedule[0].User_Schedule_StudentIDToUser?.LastName || ""
+                            }`.trim()
+                            : schedule[0].Cabinet?.CabinetName
                 : "Нет данных";
 
         const initialData = formatSchedule(schedule);
@@ -50,7 +54,9 @@ export default async function SchedulePage({
                         ? "Группа"
                         : validatedType === "teachers"
                             ? "Преподаватель"
-                            : "Кабинет"}{" "}
+                            : validatedType === "individuals"
+                                ? "Студент"
+                                : "Кабинет"}{" "}
                     {entityName}
                 </h1>
                 <ScheduleClient

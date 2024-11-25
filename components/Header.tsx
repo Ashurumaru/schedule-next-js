@@ -28,6 +28,12 @@ export default function Header() {
                         Группы
                     </Link>
                     <Link
+                        href="/individuals"
+                        className="text-sm sm:text-base font-medium text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 transition-colors"
+                    >
+                        Индивидуальные
+                    </Link>
+                    <Link
                         href="/teachers"
                         className="text-sm sm:text-base font-medium text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 transition-colors"
                     >
@@ -78,6 +84,15 @@ export default function Header() {
                                 onClick={() => setIsMenuOpen(false)}
                             >
                                 Группы
+                            </Link>
+                        </li>
+                        <li>
+                            <Link
+                                href="/individuals"
+                                className="block text-base font-medium text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 transition-colors"
+                                onClick={() => setIsMenuOpen(false)}
+                            >
+                                Индивидуальные
                             </Link>
                         </li>
                         <li>

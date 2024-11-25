@@ -19,6 +19,13 @@ export async function fetchSchedule(type: string, id: string, weekStart: Date) {
             Time: true,
             Cabinet: true,
             Group: true,
+            User_Schedule_StudentIDToUser: {
+               select: {
+                   UserID: true,
+                   FirstName: true,
+                   LastName: true,
+               }
+            },
             User_Schedule_TeacherIDToUser: {
                 select: {
                     UserID: true,
@@ -56,6 +63,20 @@ export async function fetchData(type: ValidType) {
             return teachers.map((teacher) => ({
                 id: teacher.UserID,
                 name: `${teacher.FirstName || ""} ${teacher.LastName || ""}`.trim() || "Без имени",
+            }));
+
+        case "individuals":
+            const individuals = await prisma.user.findMany({
+                where: {Status: { StatusName: "Student"} },
+                select: {
+                    UserID: true,
+                    FirstName: true,
+                    LastName: true,
+                }
+            });
+            return individuals.map((individual) => ({
+                id: individual.UserID,
+                name: `${individual.FirstName || ""} ${individual.LastName || ""}`.trim() || "Без имени",
             }));
 
         case "cabinets":

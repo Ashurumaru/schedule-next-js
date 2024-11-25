@@ -23,7 +23,7 @@ export default function List({ data, type }: ListProps) {
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         setLoading(true);
         setSearch(e.target.value);
-        setTimeout(() => setLoading(false), 300); // Симуляция задержки
+        setTimeout(() => setLoading(false), 300);
     };
 
     return (
