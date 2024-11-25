@@ -1,0 +1,87 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlserver"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  UserID   Int     @id(map: "PK_Admin")
+  Login    String? @db.NVarChar(50)
+  Password String? @db.NVarChar(50)
+  User     User?
+}
+
+model Cabinet {
+  CabinetID   Int        @id(map: "PK_Cabinet")
+  CabinetName String?    @db.NVarChar(50)
+  Schedule    Schedule[]
+}
+
+model Group {
+  GroupID      Int            @id(map: "PK_Group")
+  GroupName    String?        @db.NVarChar(50)
+  Schedule     Schedule[]
+  StudentGroup StudentGroup[]
+}
+
+model Schedule {
+  ScheduleID                    Int       @id(map: "PK_Schedule")
+  Data                          DateTime? @db.Date
+  StudentID                     Int?
+  GroupID                       Int?
+  TeacherID                     Int?
+  SubjectID                     Int?
+  CabinetID                     Int?
+  TimeID                        Int?
+  Cabinet                       Cabinet?  @relation(fields: [CabinetID], references: [CabinetID], onDelete: NoAction, onUpdate: NoAction, map: "FK_Schedule_Cabinet")
+  Group                         Group?    @relation(fields: [GroupID], references: [GroupID], onDelete: NoAction, onUpdate: NoAction, map: "FK_Schedule_Group")
+  Subject                       Subject?  @relation(fields: [SubjectID], references: [SubjectID], onDelete: NoAction, onUpdate: NoAction, map: "FK_Schedule_Subject")
+  Time                          Time?     @relation(fields: [TimeID], references: [TimeID], onDelete: NoAction, onUpdate: NoAction, map: "FK_Schedule_Time")
+  User_Schedule_StudentIDToUser User?     @relation("Schedule_StudentIDToUser", fields: [StudentID], references: [UserID], onDelete: NoAction, onUpdate: NoAction, map: "FK_Schedule_User")
+  User_Schedule_TeacherIDToUser User?     @relation("Schedule_TeacherIDToUser", fields: [TeacherID], references: [UserID], onDelete: NoAction, onUpdate: NoAction, map: "FK_Schedule_User1")
+}
+
+model Status {
+  StatusID   Int     @id(map: "PK_Status")
+  StatusName String? @db.NVarChar(50)
+  User       User[]
+}
+
+model StudentGroup {
+  StudentGroupID Int    @id(map: "PK_StudentGroup")
+  StudentID      Int?
+  GroupID        Int?
+  Group          Group? @relation(fields: [GroupID], references: [GroupID], onDelete: NoAction, onUpdate: NoAction, map: "FK_StudentGroup_Group")
+  User           User?  @relation(fields: [StudentID], references: [UserID], onDelete: NoAction, onUpdate: NoAction, map: "FK_StudentGroup_User")
+}
+
+model Subject {
+  SubjectID   Int        @id(map: "PK_Subject")
+  SubjectName String?    @db.NVarChar(50)
+  Schedule    Schedule[]
+}
+
+model Time {
+  TimeID    Int        @id(map: "PK_Time")
+  TimeStart DateTime?  @db.Time
+  TimeEnd   DateTime?  @db.Time
+  Schedule  Schedule[]
+}
+
+model User {
+  UserID                            Int            @id(map: "PK_User")
+  FirstName                         String?        @db.NVarChar(50)
+  LastName                          String?        @db.NVarChar(50)
+  MiddleName                        String?        @db.NVarChar(50)
+  PhoneNumber                       String?        @db.NVarChar(50)
+  Email                             String?        @db.NVarChar(50)
+  StatusID                          Int?
+  Schedule_Schedule_StudentIDToUser Schedule[]     @relation("Schedule_StudentIDToUser")
+  Schedule_Schedule_TeacherIDToUser Schedule[]     @relation("Schedule_TeacherIDToUser")
+  StudentGroup                      StudentGroup[]
+  Admin                             Admin          @relation(fields: [UserID], references: [UserID], onUpdate: NoAction, map: "FK_User_Admin")
+  Status                            Status?        @relation(fields: [StatusID], references: [StatusID], onDelete: NoAction, onUpdate: NoAction, map: "FK_User_Status")
+}
